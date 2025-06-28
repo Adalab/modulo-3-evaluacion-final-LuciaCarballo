@@ -1,21 +1,34 @@
+import PropTypes from 'prop-types';
 import ItemCharacter from "./ItemCharacter";
 
-function CharacterList({pcharacters}) {
+function CharacterList({ pcharacters, psearchName }) {
+  return (
+    <main>
+      {pcharacters.length === 0 ? (
+        <p className="no-results">
+          <>
+          Los archivos del Ministerio no contienen a <span className="search-term"> {psearchName}</span>. ¿Seguro que no es un muggle?
+          </>
+        </p>
 
-    return (
-        <main>
-            <ul className ="character__list"> 
-
-                {pcharacters.map(item => 
-                    <ItemCharacter pitem={item} key={item.id} />
-                )            
-                    }
-                
-                </ul>
-        </main>
-
-   
-    );
+      ) : (
+        <ul className="character__list">
+          {pcharacters.map((item) => (
+            <ItemCharacter pitem={item} key={item.id} />
+          ))}
+        </ul>
+      )}
+    </main>
+  );
 }
 
-export default CharacterList
+CharacterList.propTypes = {
+  pcharacters: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  psearchName: PropTypes.string.isRequired,
+};
+
+export default CharacterList;

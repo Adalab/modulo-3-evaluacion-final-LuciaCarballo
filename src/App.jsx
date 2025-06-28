@@ -14,12 +14,13 @@ function App() {
   const [characters, setCharacters] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [house, setHouse] = useState("");
+  const [gender, setGender] = useState("");
+  const [status, setStatus] = useState("");
 
   useEffect (() => {
     fetch('https://hp-api.onrender.com/api/characters')
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
       setCharacters(data);
     })
 
@@ -29,7 +30,12 @@ function App() {
 const filteredList= characters.filter(item => {
   const matchesName = item.name.toLowerCase().includes(searchName.toLowerCase());
   const matchesHouse = house === "" || item.house === house;
-  return matchesName && matchesHouse;
+ const matchesGender = gender === "" || item.gender?.toLowerCase() === gender;
+  const matchesStatus =
+    status === "" ||
+    (status === "true" && item.alive === true) ||
+    (status === "false" && item.alive === false);
+  return matchesName && matchesHouse && matchesGender && matchesStatus;
 });
 
  
@@ -37,7 +43,6 @@ const filteredList= characters.filter(item => {
   
     <>
     <Header />
-
     <Routes>
       <Route
         path="/"
@@ -48,8 +53,12 @@ const filteredList= characters.filter(item => {
               psetSearchName={setSearchName}
               phouse={house}
               psetHouse={setHouse}
+              pgender={gender}
+              psetGender={setGender}
+              pstatus={status}
+              psetStatus={setStatus}
             />
-            <CharacterList pcharacters={filteredList} />
+            <CharacterList pcharacters={filteredList} psearchName={searchName} />
             <Footer />
           </>
         }
@@ -59,6 +68,8 @@ const filteredList= characters.filter(item => {
         path="/character/:characterId"
         element={<CharacterDetail characters={characters} />}
       />
+
+      <Route path='*' element={<h2> ¡Revelio! Vaya... Parece que el hechizo no ha funcionado, no se ha encontrado la página</h2>}></Route>
     </Routes>
 
     </>

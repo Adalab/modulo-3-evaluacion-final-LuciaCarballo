@@ -1,5 +1,10 @@
+import PropTypes from 'prop-types';
 import altImg from "../../images/altImg.png";
-import { useParams } from "react-router-dom";
+import { useParams,  Link  } from "react-router-dom";
+import gryffindorImg from "../../images/gryffindor.png";
+import slytherinImg from "../../images/slytherin.png";
+import hufflepuffImg from "../../images/hufflepuff.png";
+import ravenclawImg from "../../images/ravenclaw.png";
 
 
 function CharacterDetail({ characters }) {
@@ -7,6 +12,14 @@ function CharacterDetail({ characters }) {
 
 
   const character = characters.find(item => item.id === characterId);
+  const houseClass = character.house ? character.house.toLowerCase() : "sin-casa";
+
+  const houseIcons = {
+  Gryffindor: gryffindorImg,
+  Slytherin: slytherinImg,
+  Hufflepuff: hufflepuffImg,
+  Ravenclaw: ravenclawImg,
+};
 
  
   if (!character) {
@@ -19,36 +32,64 @@ function CharacterDetail({ characters }) {
       : altImg;
 
   return (
-    <li className="character__item">
-      <img
-        className="character__image"
-        src={imageSrc}
-        alt={`Imagen de ${character.name}`}
-      />
 
-      <p className="character__name">
-        <label className="character__label"></label> {character.name}
-      </p>
+    <> <Link to="/" className="back-button">
+  ← Volver al listado
+</Link>
+  <div className={`character__card house-theme ${houseClass}`}>
+  <div className="character__image-box">
+    <img
+      className="character__image"
+      src={imageSrc}
+      alt={`Imagen de ${character.name}`}
+    />
+  </div>
 
-      <p className="character__species">
-        <label className="character__label"></label> {character.species}
-      </p>
+  <div className="character__details">
+    <h2 className="character__name">{character.name}</h2>
 
-      <p className="character__gender">
-        <label className="character__label"></label> {character.gender}
-      </p>
-
-      <p className="character__house">
-        <label className="character__label"></label>{" "}
-        {character.house ? character.house : "Sin casa asignada"}
-      </p>
-
-      <p className="character__status">
-        <label className="character__label"></label>{" "}
-        {character.alive ? "Vivo" : "Fallecido"}
-      </p>
-    </li>
-  );
+    <p><span className="character__label">Especie:</span> {character.species}</p>
+    <p><span className="character__label">Género:</span> {character.gender}</p>
+    <p>
+      <span className="character__label">Casa:</span>{" "}
+      {character.house ? (
+        <>
+          <img
+            src={houseIcons[character.house]}
+            alt={`Escudo de ${character.house}`}
+            className="house__icon"
+          />
+          {character.house}
+        </>
+      ) : (
+        "Sin casa asignada"
+      )}
+    </p>
+    <p>
+      <span className="character__label">Estado:</span>{" "}
+      {character.alive ? "🟢 Vivo" : "⚰️ Fallecido"}
+    </p>
+  </div>
+  </div>
+  </>
+  )
 }
+
+CharacterDetail.propTypes = {
+  characters: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      species: PropTypes.string,
+      gender: PropTypes.string,
+      house: PropTypes.string,
+      alive: PropTypes.bool,
+      image: PropTypes.string,
+    })
+  ).isRequired,
+};
+
+
+
 
 export default CharacterDetail;
